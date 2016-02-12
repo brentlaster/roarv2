@@ -1,0 +1,111 @@
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse-wtp'
+	version = '1.0.0-SNAPSHOT'
+	group = 'com.demo.pipeline'
+	configurations.compile.transitive = true  // Make sure transitive project dependencies are resolved.
+ 
+	repositories {
+		mavenCentral()
+	}
+ 
+    sourceSets {
+		integrationTest {
+			java {
+				compileClasspath += main.output + test.output
+				runtimeClasspath += main.output + test.output
+				srcDir file('src/integrationTest/java')
+			}
+			resources.srcDir file('src/integrationTest/resources')	
+		}
+	}
+	
+	sourceSets {
+		functionalTest {
+			java {
+				compileClasspath += main.output + integrationTest.output
+				runtimeClasspath += main.output + integrationTest.output
+				srcDir file('src/functionalTest/java')
+			}
+			resources.srcDir file('src/functionalTest/resources')	
+		}
+	}
+
+    configurations {
+		integrationTestCompile.extendsFrom testCompile
+		integrationTestRuntime.extendsFrom testRuntime
+	}
+	
+	configurations {
+		functionalTestCompile.extendsFrom integrationTestCompile
+		functionalTestRuntime.extendsFrom integrationTestRuntime
+	}
+	
+	dependencies {
+		compile 'mysql:mysql-connector-java:5.1.38'
+		compile "javax.ws.rs:jsr311-api:1.1.1" 
+		compile 'com.sun.jersey:jersey-server:1.19' 
+		compile 'com.sun.jersey:jersey-core:1.19' 
+	 	compile 'com.sun.jersey:jersey-client:1.19' 
+		compile 'com.sun.jersey:jersey-servlet:1.19' 
+		compile 'com.sun.jersey:jersey-json:1.19' 
+		compile 'com.fasterxml.jackson.core:jackson-core:2.6.3'
+		compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
+		compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.3'
+		compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.6.3'
+		compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.6.3'
+		compile 'org.owasp.esapi:esapi:2.0.1'
+	}
+		
+	dependencies {
+		testCompile 'junit:junit:4.11'
+		integrationTestCompile 'org.assertj:assertj-core:3.0.0'
+		functionalTestCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+	}
+    
+	
+}
+
+
+project(':dataaccess') {
+	dependencies {
+		compile project(':util')
+	}
+} 
+ 
+project(':api') {
+	dependencies {
+		compile project(':dataaccess')
+	}
+}
+ 
+
+project(':web') {
+
+	
+
+    apply plugin:'jetty'
+
+
+
+	jettyRun.httpPort=9999
+	// jettyRun.contextPath="com.demo.pipeline"
+	
+
+
+	apply plugin:'war'
+
+	apply plugin: 'eclipse-wtp'
+
+
+	dependencies {
+		compile project(':api')
+	}
+
+
+	
+
+
+
+}

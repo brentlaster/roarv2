@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Rest Example: PUT</title>
+	
+	<script src="js/jquery-min.js"></script>
+	<script src="js/jquery.dataTables.min.js"></script>
+	<script src="js/polyfill.js"></script>
+	<script src="js/put.js"></script>
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+ 
+
+	
+
+	
+</head>
+<body>
+
+<h1>API Put Example</h1>
+
+<div id="get_registry"></div>
+
+
+
+<br />
+<hr />
+
+<h1>Update Item</h1>
+
+<form id="put_agent_update" name="put_agent_update" action="#">
+<table id = "update_table" border="1">
+<tr><thead>
+	 <th>Category</th>
+	 <th>Value</th>
+	  </thead>
+	 <tr>
+	 
+<tr>
+	<td>AGENT_NAME</td>
+	<td><input type="text" id="SET_AGENT_NAME" name="AGENT_NAME" readonly></td>
+</tr>
+<tr>
+	<td>AGENT_SPECIES</td>
+	<td id="SET_AGENT_SPECIES"></td>
+</tr>
+<tr>
+	<td>SERVICE_START</td>
+	<td id="SET_SERVICE_START"></td>
+</tr>
+<tr>
+	<td>SERVICE_LAST</td>
+	<td><input type="date" id="SET_SERVICE_LAST" name="SERVICE_LAST"></td>
+</tr>
+<tr>
+	<td>ADVERSARY_NAME</td>
+	<td id="SET_ADVERSARY_NAME"></td>
+</tr>
+<tr>
+	<td>ADVERSARY_TECH</td>
+	<td id="SET_ADVERSARY_TECH"></td>
+</tr>
+<tr>
+	<td><input type="submit" value="Submit"></td>
+</tr>
+</table>
+</form>
+
+<br />
+<div id="update_response"></div>
+
+
+<br /><br />
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Add Animal Responder</title>
+	
+	<script src="js/jquery-min.js"></script>
+	<script src="js/polyfill.js"></script>
+	<script src="js/post.js"></script>
+</head>
+<body style="height: 436px; ">
+<h1>Add Animal Responder</h1>
+
+<form id="post_new_agent" name="post_new_agent" action="#">
+	<table>
+		<tr>
+			<td>Agent Name</td>
+			<td><form>
+					<input name="AGENT_NAME" id="AGENT_NAME" maxlength="50">
+				</form></td>
+		</tr>
+		<tr>
+			<td>Agent Species</td>
+			<td><input name="AGENT_SPECIES" id="AGENT_SPECIES" maxlength="50"></td>
+		</tr>
+		<tr>
+			<td>Service Start Date</td>
+			<td><input name="SERVICE_START" id="SERVICE_START" maxlength="50"></td>
+		</tr>
+		<tr>
+			<td>Last Service Date</td>
+			<td><input name="SERVICE_LAST" id="SERVICE_LAST" maxlength="50"></td>
+		</tr>
+		<tr>
+			<td>Adversary Name</td>
+			<td><input name="ADVERSARY_NAME" id="ADVERSARY_NAME" maxlength="50"></td>
+		</tr>
+		<tr>
+			<td>Adversary Tech</td>
+			<td><input name="ADVERSARY_TECH" id="ADVERSARY_TECH" maxlength="50"></td>
+		</tr>
+		<tr>
+	<td></td>
+	<td><input type="button" name="submit_it" id="submit_it" value="Submit"> Using Jackson Mapper</td>
+</tr>
+<tr>
+	<td></td>
+	<td><input type="button" name="submit_it2" id="submit_it2" value="Submit v2"> Using JSON Array and Object</td>
+</tr>
+	</table>
+	</form>
+
+<br />
+<div id="div_ajaxResponse"></div>
+
+</body>
+</html>

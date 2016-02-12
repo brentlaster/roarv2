@@ -1,0 +1,18 @@
+@CHARSET "ISO-8859-1";
+
+
+body {
+    background-color: #C5DFE8;
+    font-weight: bold;
+    
+    
+}
+
+h1 {
+    color: navy;
+    margin-left: 20px;
+}
+#get_registry2 th { text-align: left; 
+					 background-color: #73BF58;
+    				 color: white;
+    				 font-size: 110%;}

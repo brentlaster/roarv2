@@ -1,0 +1,85 @@
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies { 
+	// classpath files("api/build/classes/main/com/demo/pipeline/registry")
+	// classpath files("api/build/classes/main/com/demo/pipeline/status")
+  }
+}
+
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse-wtp'
+	version = '1.0.0-SNAPSHOT'
+	group = 'com.demo.pipeline'
+	configurations.compile.transitive = true  // Make sure transitive project dependencies are resolved.
+ 
+	repositories {
+		mavenCentral()
+	}
+ 
+	dependencies {
+		compile 'mysql:mysql-connector-java:5.1.38'
+		compile "javax.ws.rs:jsr311-api:1.1.1" 
+		compile 'com.sun.jersey:jersey-server:1.19' 
+		compile 'com.sun.jersey:jersey-core:1.19' 
+	 	compile 'com.sun.jersey:jersey-client:1.19' 
+		compile 'com.sun.jersey:jersey-servlet:1.19' 
+		compile 'com.sun.jersey:jersey-json:1.19' 
+		compile 'com.fasterxml.jackson.core:jackson-core:2.6.3'
+		compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
+		compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.3'
+		compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.6.3'
+		compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.6.3'
+		compile 'org.owasp.esapi:esapi:2.0.1'
+	}
+    
+	
+}
+
+
+project(':dataaccess') {
+	dependencies {
+		compile project(':util')
+	}
+} 
+ 
+project(':api') {
+	dependencies {
+		compile project(':dataaccess')
+	}
+}
+ 
+
+project(':web') {
+
+	
+
+    apply plugin:'jetty'
+
+
+
+	jettyRun.httpPort=9999
+	
+
+
+	apply plugin:'war'
+
+	apply plugin: 'eclipse-wtp'
+
+
+	dependencies {
+		compile project(':api')
+	}
+
+
+	
+
+
+
+}
