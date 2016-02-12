@@ -21,7 +21,7 @@ public class MyDataSource {
 		}
     
         try {
-            fis = new FileInputStream("c:\\db.properties");
+            fis = new FileInputStream("db.properties");
             props.load(fis);
             mysqlDS = new MysqlDataSource();
             mysqlDS.setURL(props.getProperty("MYSQL_DB_URL"));
