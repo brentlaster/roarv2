@@ -1,3 +1,69 @@
+buildscript {
+    repositories {
+        maven {
+            url 'http://localhost:8082/artifactory/libs-snapshot'
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+        
+    }
+    dependencies {
+        //Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:+"
+    }
+
+    
+}
+
+
+
+allprojects {
+    apply plugin: "com.jfrog.artifactory"
+ 
+    apply plugin: "maven-publish"
+
+    // this would be if we were using the older artifactory
+    //  and maven plugin and probably running through Jenkins
+
+    // publishing {
+     //	publishConfigs('archives', 'published')
+   // }
+
+
+}
+
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        repository {
+            repoKey = 'libs-snapshot-local'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+            
+        }
+   
+   	 defaults {
+		publications('mavenJava')
+		publishPom = true
+	}
+        
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-snapshot-local'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+            
+        }
+    }
+}
+
+artifactoryPublish.skip = true
 
 subprojects {
 	apply plugin: 'java'
@@ -94,6 +160,7 @@ project(':web') {
 	
 
 
+
 	apply plugin:'war'
 
 	apply plugin: 'eclipse-wtp'
@@ -103,9 +170,17 @@ project(':web') {
 		compile project(':api')
 	}
 
+	publishing {
+	    publications {
+		mavenJava(MavenPublication) {
+			from components.web
+		}
+	    }
+	    
+	}
 
 	
 
-
+	
 
 }
