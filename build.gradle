@@ -18,8 +18,7 @@ buildscript {
 }
 
 
-
-allprojects {
+subprojects {
     apply plugin: "com.jfrog.artifactory"
  
     apply plugin: "maven-publish"
@@ -33,6 +32,8 @@ allprojects {
 
 
 }
+
+// rootProject.artifactoryPublish.skip = true
 
 
 artifactory {
@@ -63,7 +64,7 @@ artifactory {
     }
 }
 
-artifactoryPublish.skip = true
+// rootProject.artifactoryPublish.skip = true
 
 subprojects {
 	apply plugin: 'java'
