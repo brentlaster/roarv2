@@ -30,19 +30,13 @@ subprojects {
      //	publishConfigs('archives', 'published')
    // }
 
-   apply plugin: 'jacoco'
+  
 
-   test {
-	jacoco {
-		append = false
-		destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
-		classDumpFile = file("$buildDir/jacoco/classpathdumps")
-	}
-   }		
+  		
 
 }
 
-// rootProject.artifactoryPublish.skip = true
+
 
 
 artifactory {
@@ -78,6 +72,7 @@ artifactory {
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse-wtp'
+	apply plugin: 'jacoco'
 	version = '1.0.0-SNAPSHOT'
 	group = 'com.demo.pipeline'
 	configurations.compile.transitive = true  // Make sure transitive project dependencies are resolved.
@@ -140,7 +135,14 @@ subprojects {
 		functionalTestCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
 	}
     
-	
+	 test {
+	jacoco {
+		append = false
+		destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+		classDumpFile = file("$buildDir/jacoco/classpathdumps")
+	}
+   }	
+
 }
 
 
