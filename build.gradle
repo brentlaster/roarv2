@@ -30,6 +30,15 @@ subprojects {
      //	publishConfigs('archives', 'published')
    // }
 
+   apply plugin: 'jacoco'
+
+   test {
+	jacoco {
+		append = false
+		destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+		classDumpFile = file("$buildDir/jacoco/classpathdumps")
+	}
+   }		
 
 }
 
