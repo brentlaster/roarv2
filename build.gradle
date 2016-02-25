@@ -73,6 +73,7 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse-wtp'
 	apply plugin: 'jacoco'
+	
 	version = '1.0.0-SNAPSHOT'
 	group = 'com.demo.pipeline'
 	configurations.compile.transitive = true  // Make sure transitive project dependencies are resolved.
@@ -135,13 +136,15 @@ subprojects {
 		functionalTestCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
 	}
     
-	 test {
-	jacoco {
-		append = false
-		destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
-		classDumpFile = file("$buildDir/jacoco/classpathdumps")
-	}
-   }	
+	test {
+		jacoco {
+			append = false
+			destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+			classDumpFile = file("$buildDir/jacoco/classpathdumps")
+		}
+   	}
+
+		
 
 }
 
@@ -192,7 +195,32 @@ project(':web') {
 	}
 
 	
+//	apply plugin 'cargo'
+	
+//	cargoDeployRemote.dependsOn getRoarWar, cargoUndeployRemote
 
+//	cargoUndeployRemote
+//		onlyIf appContextStatus
+//	}
+  
+	configurations {
+		roarWar
+	}
+	
+	dependencies {
+  		   roarWar(group: 'com.demo.pipeline', name: 'web', version: '1.0.0-20160216.031519-3', ext: 'war')
+		// roarWar(group: 'com.demo.pipeline', name: 'web', version: '1.0.0-latest.integration', ext: 'war')
+	}
+	
+	ext.downloadDir=file("$buildDir/download/artifacts")
+
+	task fetchRoarWar(type:Copy){
+		from configurations.roarWar
+		into downloadDir
+	}	
+
+
+	
 	
 
 }
