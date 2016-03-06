@@ -6,6 +6,9 @@
  * 
  * jquery is required
  */
+
+var domainName = location.protocol + '//' + location.host + '/' + location.pathname.split('/')[1];
+
 $(document).ready(function() {
 	
 	
@@ -18,9 +21,10 @@ $(document).ready(function() {
 
 function getRegistry2() {
 	
+		
 	ajaxObj = {  
 			type: "GET",
-			url: "http://localhost:9999/web/api/v1/registry", 
+			url: domainName + "/api/v1/registry", 
 			contentType:"application/json",
 			error: function(jqXHR, textStatus, errorThrown) {
 				console.log(jqXHR.responseText);

@@ -22,7 +22,7 @@ import com.demo.util.ToJSON;
 
 import com.demo.dao.SchemaRegistry;
 
-@Path("/v2/registry")
+@Path("v2/registry")
 public class V2_registry {
 
 	@GET
@@ -54,7 +54,7 @@ public class V2_registry {
 		return Response.ok(returnString).build();
 	}
 	
-	@Path("/{species}")
+	@Path("{species}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response returnSpecies(
@@ -81,7 +81,7 @@ public class V2_registry {
 		return Response.ok(returnString).build();
 	}
 	
-	@Path("/{species}/{name}")
+	@Path("{species}/{name}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response returnSpeciesName(

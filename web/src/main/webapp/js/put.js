@@ -3,6 +3,9 @@
  * 
  * jquery is required
  */
+
+var domainName = location.protocol + '//' + location.host + '/' + location.pathname.split('/')[1];
+
 $(document).ready(function() {
 	
 	var $put_agent_update = $('#put_agent_update')
@@ -54,7 +57,7 @@ function updateRegistry(obj, name, species) {
 	
 	ajaxObj = {  
 			type: "PUT",
-			url: "http://localhost:9999/web/api/v3/registry/" + species + "/" + name,
+			url: domainName + "/api/v3/registry/" + species + "/" + name,
 			data: JSON.stringify(obj), 
 			contentType:"application/json",
 			error: function(jqXHR, textStatus, errorThrown) {

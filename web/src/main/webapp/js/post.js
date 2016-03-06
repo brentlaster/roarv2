@@ -6,6 +6,8 @@
  * 
  * jquery is required
  */
+var domainName = location.protocol + '//' + location.host + '/' + location.pathname.split('/')[1];
+
 $(document).ready(function() {
 	// console.log("ready");
 	
@@ -27,7 +29,7 @@ $(document).ready(function() {
 		
 		ajaxObj = {  
 			type: "POST",
-			url: "http://localhost:9999/web/api/v2/registry/", 
+			url: domainName + "/api/v2/registry/", 
 			data: JSON.stringify(jsObj), 
 			contentType:"application/json",
 			error: function(jqXHR, textStatus, errorThrown) {

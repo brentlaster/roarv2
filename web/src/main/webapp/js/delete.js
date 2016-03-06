@@ -7,6 +7,8 @@
  * jquery is required
  */
 
+var domainName = location.protocol + '//' + location.host + '/' + location.pathname.split('/')[1];
+
 $(document).ready(function() {
 	
 	getRegistry();
@@ -29,7 +31,7 @@ function deleteAgent(obj, agent, species) {
 	
 	ajaxObj = {  
 			type: "DELETE",
-			url: "http://localhost:9999/web/api/v3/registry/" + species + "/" + agent,
+			url: domainName + "/api/v3/registry/" + species + "/" + agent,
 			data: JSON.stringify(obj), 
 			contentType:"application/json",
 			error: function(jqXHR, textStatus, errorThrown) {

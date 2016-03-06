@@ -18,7 +18,7 @@ import org.codehaus.jettison.json.JSONArray;
 import com.demo.dao.MyDataSource;
 import com.demo.util.ToJSON;
 
-@Path("/v1/registry")
+@Path("v1/registry")
 public class V1_registry {
 	
 	@GET

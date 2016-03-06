@@ -15,7 +15,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.demo.dao.SchemaRegistry;
 
-@Path("/v3/registry")
+@Path("v3/registry")
 public class V3_registry {
 	
 	@POST
@@ -58,7 +58,7 @@ public class V3_registry {
 		return Response.ok(returnString).build();
 	}
 	
-	@Path("/{species}/{name}")
+	@Path("{species}/{name}")
 	@PUT
 	@Consumes({MediaType.APPLICATION_FORM_URLENCODED,MediaType.APPLICATION_JSON})
 	@Produces(MediaType.APPLICATION_JSON)
@@ -104,7 +104,7 @@ public class V3_registry {
 	
 
 	
-	@Path("/{species}/{name}")
+	@Path("{species}/{name}")
 	@DELETE
 	@Consumes({MediaType.APPLICATION_FORM_URLENCODED,MediaType.APPLICATION_JSON})
 	@Produces(MediaType.APPLICATION_JSON)
