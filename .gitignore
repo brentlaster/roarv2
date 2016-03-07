@@ -6,3 +6,4 @@
 *.bin
 *.lock
 *.war*
+*/.classpath
