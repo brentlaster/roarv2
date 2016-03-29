@@ -60,6 +60,10 @@ subprojects {
 		
 	dependencies {
 		testCompile 'junit:junit:4.11'
+		testCompile 'org.mockito:mockito-all:1.8.4'
+		testCompile 'org.dbunit:dbunit:2.5.1'
+		testCompile 'commons-io:commons-io:2.4'
+		
 		integrationTestCompile 'org.assertj:assertj-core:3.0.0'
 		functionalTestCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
 	}
@@ -70,14 +74,28 @@ subprojects {
 
 
 project(':dataaccess') {
+
+
 	dependencies {
 		compile project(':util')
+	}
+	configurations {
+    	testArtifacts.extendsFrom testRuntime
+	}
+	task testJar(type: Jar) {
+  	  classifier "test"
+    	from sourceSets.test.output
+	}
+	artifacts {
+   		 testArtifacts testJar
 	}
 } 
  
 project(':api') {
 	dependencies {
 		compile project(':dataaccess')
+		 testCompile project (path: ":dataaccess", configuration: 'testArtifacts')
+		 testCompile 'com.mockrunner:mockrunner-jdbc:1.1.1'
 	}
 }
  
