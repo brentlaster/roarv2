@@ -1,3 +1,0 @@
-artifactory_user=${security.getCurrentUsername()}
-artifactory_password=${security.getEncryptedPassword()!"*** Insert encrypted password here ***"}
-artifactory_contextUrl=http://localhost:8082/artifactory
