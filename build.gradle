@@ -1,16 +1,67 @@
- 
+
+// Gradle build file for demonstration pipeline 
+// (c) Brent Laster 2018
+
+plugins {
+  id "org.akhikhl.gretty" version "2.0.0"
+}
+
+// set a default version string
+ext.setVersion='0.0.1-SNAPSHOT'
+
+// set a flag for whether we are running in Jenkins or not
+ext.runningInJenkins=0
+
+// if we have the semantic versions values set then use those
+
+if (hasProperty('MAJOR_VERSION') && hasProperty('MINOR_VERSION') && hasProperty('PATCH_VERSION') && hasProperty('BUILD_STAGE'))
+	{    setVersion = MAJOR_VERSION + '.' + MINOR_VERSION + '.' + PATCH_VERSION + '-' + BUILD_STAGE }
+
+// otherwise if have the SOURCE_BUILD_NUMBER set (as would be in Jenkins) then use that (and assume that we are running in Jenkins)
+
+else if (System.env.SOURCE_BUILD_NUMBER != null) 
+	{    setVersion = '0.0.' + System.env.SOURCE_BUILD_NUMBER + '-SNAPSHOT'
+	     runningInJenkins = 1
+        }
+
+
+// applies to all subprojects
 subprojects {
+	
 	apply plugin: 'java'
 	apply plugin: 'eclipse-wtp'
-	version = '1.0.0-SNAPSHOT'
+	apply plugin: 'jacoco'
+	
 	group = 'com.demo.pipeline'
+	version=setVersion
+	
+	
+
 	configurations.compile.transitive = true  // Make sure transitive project dependencies are resolved.
+
+
+	// set backwards compatibililty with 1.7 so we can use in things like tomcat 7
+
+	tasks.withType(JavaCompile) { sourceCompatibility = "1.7"; targetCompatibility = "1.7" } 
+
+	
+	 // if we think we're not running in Jenkins, then allow the mavenCentral repo to be used
+	 //  this allows us to run this outside of Jenkins
+	 //  in Jenkins, we want to use the Artifactory repository that Jenkins points us to
+	 //  note that we could also use the Artifactory plugin here
+		
+
+
+         if(! runningInJenkins)
+	 {
+	 	repositories {
+			mavenCentral()
+		}
+	 }
+
  
-	repositories {
-		mavenCentral()
-	}
- 
-    sourceSets {
+	// define a separate sourceSet to separate out integration tests
+    	sourceSets {
 		integrationTest {
 			java {
 				compileClasspath += main.output + test.output
@@ -21,6 +72,7 @@ subprojects {
 		}
 	}
 	
+	// define a separate sourceSet to separate out functional tests
 	sourceSets {
 		functionalTest {
 			java {
@@ -32,7 +84,7 @@ subprojects {
 		}
 	}
 
-    configurations {
+    	configurations {
 		integrationTestCompile.extendsFrom testCompile
 		integrationTestRuntime.extendsFrom testRuntime
 	}
@@ -61,70 +113,158 @@ subprojects {
 	dependencies {
 		testCompile 'junit:junit:4.11'
 		testCompile 'org.mockito:mockito-all:1.8.4'
-		testCompile 'org.dbunit:dbunit:2.5.1'
 		testCompile 'commons-io:commons-io:2.4'
+		testCompile 'com.mockrunner:mockrunner-jdbc:1.1.1'
+		testCompile 'org.jacoco:org.jacoco.agent:0.7.4+'
 		
-		integrationTestCompile 'org.assertj:assertj-core:3.0.0'
-		functionalTestCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+		integrationTestCompile 'org.dbunit:dbunit:2.5.1'		
 	}
-    
-	
+
+
+	// we need a specific version to work around a problem
+	// jacoco {
+        // 	toolVersion = "0.7.7+"
+    	// }
+
+	// create tests in a standard location and always cause them to run
+	tasks.withType(Test) {
+		reports.html.destination = file("${reporting.baseDir}/${name}")
+		outputs.upToDateWhen { false }
+		
+	}
+
+
+	// set an environment variable that we use to point to the database we want   
+	task integrationTest(type:Test){
+		environment 'MYSQL_ENV_MYSQL_DATABASE', 'registry_test'
+		testClassesDir = sourceSets.integrationTest.output.classesDir
+		classpath = sourceSets.integrationTest.runtimeClasspath
+			 
+	}
+
+
+
+
+	 // define some custom locations for our Jacoco reports to line up with integration test areas
+	 task jacocoIntegrationTestReport(type: JacocoReport) {
+		sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+       		classDirectories =  files(sourceSets.main.output)
+
+		sourceDirectories += files(sourceSets.integrationTest.allSource.srcDirs)
+		classDirectories += files(sourceSets.integrationTest.allSource.srcDirs)
+		executionData integrationTest
+
+		
+	}
+
+
+
+	// set an environment variable that we use to point to the database we want   
+	task functionalTest(type:Test){
+		testClassesDir = sourceSets.functionalTest.output.classesDir
+		classpath = sourceSets.functionalTest.runtimeClasspath
+			 
+	}
+
+
+		
 }
 
 
-
+// individual subproject
 project(':dataaccess') {
 
 
 	dependencies {
 		compile project(':util')
 	}
+	// create a configuration from our testing pieces for other things to depend on (see api)
 	configurations {
-    	testArtifacts.extendsFrom testRuntime
+    		testArtifacts.extendsFrom testRuntime
 	}
 	task testJar(type: Jar) {
   	  classifier "test"
-    	from sourceSets.test.output
+    	  from sourceSets.test.output
 	}
 	artifacts {
    		 testArtifacts testJar
 	}
 } 
- 
+
+
+// individual subproject 
 project(':api') {
 	dependencies {
 		compile project(':dataaccess')
 		 testCompile project (path: ":dataaccess", configuration: 'testArtifacts')
 		 testCompile 'com.mockrunner:mockrunner-jdbc:1.1.1'
 	}
+
 }
  
-
+// individual subproject
 project(':web') {
 
 	
 
-    apply plugin:'jetty'
-
-
-
-	jettyRun.httpPort=9999
-	// jettyRun.contextPath="com.demo.pipeline"
+    gretty.httpPort=8086
+    gretty.contextPath="com.demo.pipeline"
 	
 
 
-	apply plugin:'war'
+    apply plugin:'war'
 	
 
+    // helps using this with eclipse
+    apply plugin: 'eclipse-wtp'
 
-	apply plugin: 'eclipse-wtp'
 
+    dependencies {
+	compile project(':api')
+        testCompile'commons-io:commons-io:2.5'
+	testCompile 'junit:junit:4.11'
+    }
 
-	dependencies {
-		compile project(':api')
-	}
+    // create a simple info file for packaging with our war
+
+    task createInfoFile {
+	doLast {
+	   def InfoFile = new File("web/app-info.txt")
+	   Properties props = new Properties()
+	   props.setProperty('version',version)
+           props.setProperty('disclaimer',"Covered under the Use At Your Own Risk guarantee. For workshop demos only.  All others beware!")
+	   props.store(InfoFile.newWriter(),null)
+        }
+    }
+ 
+    // only needed here because we have to force pom creation to work with Artifactory
+    apply plugin: 'maven'
+
+    task createPom {
+                doLast { 
+	 		pom { 
+        			project { 
+        			groupId 'com.demo.pipeline'
+			        artifactId project.name
+        			version "$version"
+        		}
+		    }.writeTo("pom.xml")
+                  }
+		}
+
+     
+     // creating our war file is dependent on the two files we want to associate with it
+     war {
+	  dependsOn createInfoFile, createPom
+	   baseName = "web"
+
+	   from('.') {
+		include 'app-info.txt'
+		into('WEB-INF/classes')
+           }
+	 }
 	
-		
-} 
+}
 
 	
+
