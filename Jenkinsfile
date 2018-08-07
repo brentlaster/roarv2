@@ -1,13 +1,21 @@
 #!groovy
-node ('worker_node1') {
-    stage('Source') { // Get code
-        // get code from our Git repository
-	checkout scm
-    }
-    stage('Compile') { // Compile and do unit testing
-        // get Gradle HOME value
-        def gradleHome = tool 'gradle4'
-        // run Gradle to execute compile and unit testing
-        sh "'${gradleHome}/bin/gradle' clean compileJava test"
+pipeline {
+    agent { label 'worker_node1' }
+    stages {
+        stage('Source') { // Get code
+            steps {
+                // get code from our Git repository
+                checkout scm
+            }
+        }
+        stage('Compile') { // Compile and do unit testing
+            tools {
+                gradle 'gradle4'
+            }
+            steps {
+                // run Gradle to execute compile and unit testing
+                sh 'gradle clean compileJava test'
+            }
+        }
     }
 }
