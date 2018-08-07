@@ -2,7 +2,7 @@
 
 
 body {
-    background-color: #C5DFE8;
+    background-color: #73BF58;
     font-weight: bold;
     
     
@@ -13,6 +13,6 @@ h1 {
     margin-left: 20px;
 }
 #get_registry2 th { text-align: left; 
-					 background-color: #73BF58;
+					 background-color: #C5DFE8;
     				 color: white;
     				 font-size: 110%;}
